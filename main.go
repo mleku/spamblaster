@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/mleku/spamblaster/pkg/creator"
+	"github.com/mleku/spamblaster/pkg/logger"
 	"io"
 	"net/http"
 	"os"
@@ -18,93 +20,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Relay Creator Schema
-type Relay struct {
-	ID                   string      `json:"id"`
-	Name                 string      `json:"name"`
-	OwnerID              string      `json:"ownerId"`
-	Status               interface{} `json:"status"`
-	DefaultMessagePolicy bool        `json:"default_message_policy"`
-	IP                   interface{} `json:"ip"`
-	Capacity             interface{} `json:"capacity"`
-	Port                 interface{} `json:"port"`
-	AllowList            struct {
-		ID           string `json:"id"`
-		RelayID      string `json:"relayId"`
-		ListKeywords []struct {
-			ID          string      `json:"id"`
-			AllowListID string      `json:"AllowListId"`
-			BlockListID interface{} `json:"BlockListId"`
-			Keyword     string      `json:"keyword"`
-			Reason      string      `json:"reason"`
-			ExpiresAt   interface{} `json:"expires_at"`
-		} `json:"list_keywords"`
-		ListPubkeys []struct {
-			ID          string      `json:"id"`
-			AllowListID string      `json:"AllowListId"`
-			BlockListID interface{} `json:"BlockListId"`
-			Pubkey      string      `json:"pubkey"`
-			Reason      string      `json:"reason"`
-			ExpiresAt   interface{} `json:"expires_at"`
-		} `json:"list_pubkeys"`
-	} `json:"allow_list"`
-	BlockList struct {
-		ID           string `json:"id"`
-		RelayID      string `json:"relayId"`
-		ListKeywords []struct {
-			ID          string      `json:"id"`
-			AllowListID interface{} `json:"AllowListId"`
-			BlockListID string      `json:"BlockListId"`
-			Keyword     string      `json:"keyword"`
-			Reason      string      `json:"reason"`
-			ExpiresAt   interface{} `json:"expires_at"`
-		} `json:"list_keywords"`
-		ListPubkeys []struct {
-			ID          string      `json:"id"`
-			AllowListID interface{} `json:"AllowListId"`
-			BlockListID string      `json:"BlockListId"`
-			Pubkey      string      `json:"pubkey"`
-			Reason      string      `json:"reason"`
-			ExpiresAt   interface{} `json:"expires_at"`
-		} `json:"list_pubkeys"`
-	} `json:"block_list"`
-	Owner struct {
-		ID     string      `json:"id"`
-		Pubkey string      `json:"pubkey"`
-		Name   interface{} `json:"name"`
-	} `json:"owner"`
-
-	Moderators []struct {
-		ID      string `json:"id"`
-		RelayID string `json:"relayId"`
-		UserID  string `json:"userId"`
-		User    struct {
-			Pubkey string `json:"pubkey"`
-		} `json:"user"`
-	} `json:"moderators"`
-}
-
-var errLog = bufio.NewWriter(os.Stderr)
-
-var logfile *os.File
-
-func logFile(message string) {
-	log(message)
-}
-
-func log(message string) {
-	_, err := errLog.WriteString(fmt.Sprintln(message))
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr,
-			"error writing log: %s\n", err)
-	}
-	err = errLog.Flush()
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr,
-			"Error flushing log Writer: %s\n", err)
-	}
-}
-
 func decodePub(pubKey string) string {
 	if strings.Contains(pubKey, "npub") {
 		if _, v, err := nip19.Decode(pubKey); err == nil {
@@ -114,16 +29,16 @@ func decodePub(pubKey string) string {
 	return pubKey
 }
 
-func queryRelay(oldRelay *Relay) (*Relay, error) {
+func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
 
-	var relay Relay
+	var relay creator.Relay
 
 	// example spamblaster config
 	url := "http://127.0.0.1:3000/api/sconfig/relays/clkklcjon000wgh31mcgbut40"
 
 	body, err := os.ReadFile("./spamblaster.cfg")
 	if err != nil {
-		log(fmt.Sprintf("unable to read config file: %v", err))
+		log.Err(fmt.Sprintf("unable to read config file: %v", err))
 	} else {
 		url = strings.TrimSuffix(string(body), "\n")
 	}
@@ -132,16 +47,16 @@ func queryRelay(oldRelay *Relay) (*Relay, error) {
 		Timeout: time.Second * 10,
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-
+	var req *http.Request
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		log(err.Error())
+		log.Err(err.Error())
 		return oldRelay, err
 	}
 
 	res, getErr := rClient.Do(req)
 	if getErr != nil {
-		log(getErr.Error())
+		log.Err(getErr.Error())
 		return oldRelay, err
 	}
 
@@ -157,18 +72,21 @@ func queryRelay(oldRelay *Relay) (*Relay, error) {
 
 	body, readErr := io.ReadAll(res.Body)
 	if readErr != nil {
-		log(readErr.Error())
+		log.Err(readErr.Error())
 		return oldRelay, readErr
 	}
 
 	jsonErr := json.Unmarshal(body, &relay)
 	if jsonErr != nil {
-		log("json not unmarshaled")
+		log.Err("json not unmarshaled")
 		return oldRelay, jsonErr
 	}
 
 	return &relay, nil
 }
+
+// initialise logger
+var log = logger.NewLogger()
 
 type influxdbConfig struct {
 	Url         string `mapstructure:"INFLUXDB_URL"`
@@ -179,45 +97,39 @@ type influxdbConfig struct {
 }
 
 func main() {
-	defer func(logfile *os.File) {
-		err := logfile.Close()
+	var err error
+	var reader = bufio.NewReader(os.Stdin)
+	var output = bufio.NewWriter(os.Stdout)
+	// close logger properly
+	defer func() {
+		err = log.Close()
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr,
 				"error closing logger: %s\n", err)
 		}
-	}(logfile)
-
-	var reader = bufio.NewReader(os.Stdin)
-	var output = bufio.NewWriter(os.Stdout)
-	defer func() {
-		err := output.Flush()
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr,
-				"Error flushing Writer: %s\n", err)
-		}
 	}()
+	// close output writer properly
 	defer func() {
-		err := errLog.Flush()
+		err = output.Flush()
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr,
-				"Error flushing log Writer: %s\n", err)
+				"error flushing output writer: %s\n", err)
 		}
 	}()
 
-	var err1 error
-	var relay *Relay
-	relay, err1 = queryRelay(relay)
-	if err1 != nil {
-		log("there was an error fetching relay, using cache or nil")
+	var relay *creator.Relay
+	relay, err = queryRelay(relay)
+	if err != nil {
+		log.Err("there was an error fetching relay, using cache or nil")
 	}
 
 	ticker := time.NewTicker(30 * time.Second)
 	go func() {
 		for {
 			<-ticker.C
-			relay, err1 = queryRelay(relay)
-			if err1 != nil {
-				log("there was an error fetching relay, using cache or nil")
+			relay, err = queryRelay(relay)
+			if err != nil {
+				log.Err("there was an error fetching relay, using cache or nil")
 			}
 		}
 	}()
@@ -229,18 +141,18 @@ func main() {
 	influxEnabled := true
 	var iConfig *influxdbConfig
 	if err := viper.ReadInConfig(); err != nil {
-		log(fmt.Sprint("Warn: error reading influxdb config file /usr/local/etc/.spamblaster.env\n",
+		log.Info(fmt.Sprint("Warn: error reading influxdb config file /usr/local/etc/.spamblaster.env\n",
 			err))
 		influxEnabled = false
 	}
 	// Viper unmarshals the loaded env variables into the struct
 	if err := viper.Unmarshal(&iConfig); err != nil {
-		log(fmt.Sprint("Warn: unable to decode influxdb config into struct\n",
+		log.Err(fmt.Sprint("Warn: unable to decode influxdb config into struct\n",
 			err))
 		influxEnabled = false
 	}
 
-	log(fmt.Sprintf("Info: influxdb: %t\n", influxEnabled))
+	log.Err(fmt.Sprintf("Info: influxdb: %t\n", influxEnabled))
 
 	var client influxdb2.Client
 	var writeAPI api.WriteAPI
@@ -285,11 +197,10 @@ func main() {
 				isModAction = true
 			}
 			if isModAction {
-				log(fmt.Sprintf("1984 (memory hole) request from %s>",
+				log.Err(fmt.Sprintf("1984 (memory hole) request from %s>",
 					e.Event.PubKey))
 				// perform deletion of a single event
 				// grab the event id
-
 				thisReason := ""
 				thisEvent := ""
 				for _, x := range e.Event.Tags {
@@ -302,7 +213,7 @@ func main() {
 				}
 
 				if thisEvent != "" {
-					log(fmt.Sprintf(
+					log.Info(fmt.Sprintf(
 						"received 1984 (memory hole) from mod: %s, delete event <%s>, reason: %s",
 						e.Event.PubKey, thisEvent, thisReason,
 					))
@@ -312,9 +223,10 @@ func main() {
 						filter)
 					out, err := cmd.Output()
 					if err != nil {
-						log(fmt.Sprintln("could not run command: ", err))
+						log.Err(fmt.Sprintln("could not run command: ", err))
 					}
-					log(fmt.Sprintln("strfry command output: ", string(out)))
+					log.Err(fmt.Sprintln("strfry command output: ",
+						string(out)))
 
 					// cmd.Run()
 				}
@@ -335,7 +247,7 @@ func main() {
 				// event should be blank if we're getting a report about just a
 				// pubkey
 				if thisPubkey != "" && thisEvent == "" {
-					log(fmt.Sprintf("received 1984 (memory hole) from mod: %s, block and delete public key <%s>, reason: %s",
+					log.Info(fmt.Sprintf("received 1984 (memory hole) from mod: %s, block and delete public key <%s>, reason: %s",
 						e.Event.PubKey, thisPubkey, thisReason))
 					// shell out
 					filter := fmt.Sprintf("{\"authors\": [\"%s\"]}", thisPubkey)
@@ -343,9 +255,10 @@ func main() {
 						filter)
 					out, err := cmd.Output()
 					if err != nil {
-						log(fmt.Sprintln("could not run command: ", err))
+						log.Err(fmt.Sprintln("could not run command: ", err))
 					}
-					log(fmt.Sprintln("strfry command output: ", string(out)))
+					log.Info(fmt.Sprintln("strfry command output: ",
+						string(out)))
 					// cmd.Run()
 					// TODO: call to api
 				}
@@ -361,16 +274,16 @@ func main() {
 					if _, v, err := nip19.Decode(k.Pubkey); err == nil {
 						pub := v.(string)
 						if strings.Contains(e.Event.PubKey, pub) {
-							log("allowing whitelist for public key: " + k.Pubkey)
+							log.Err("allowing whitelist for public key: " + k.Pubkey)
 							allowMessage = true
 						}
 					} else {
-						log("error decoding public key: " + k.Pubkey + " " + err.Error())
+						log.Err("error decoding public key: " + k.Pubkey + " " + err.Error())
 					}
 				}
 
 				if strings.Contains(e.Event.PubKey, k.Pubkey) {
-					log("allowing whitelist for public key: " + k.Pubkey)
+					log.Info("allowing whitelist for public key: " + k.Pubkey)
 					allowMessage = true
 				}
 			}
@@ -387,7 +300,7 @@ func main() {
 				dEvent := strings.ToLower(e.Event.Content)
 				dKeyword := strings.ToLower(k.Keyword)
 				if strings.Contains(dEvent, dKeyword) {
-					log("allowing for keyword: " + k.Keyword)
+					log.Info("allowing for keyword: " + k.Keyword)
 					allowMessage = true
 				}
 			}
@@ -402,16 +315,16 @@ func main() {
 					if _, v, err := nip19.Decode(k.Pubkey); err == nil {
 						pub := v.(string)
 						if strings.Contains(e.Event.PubKey, pub) {
-							log("rejecting for public key: " + k.Pubkey)
+							log.Info("rejecting for public key: " + k.Pubkey)
 							badResp = "blocked public key " + k.Pubkey + " reason: " + k.Reason
 							allowMessage = false
 						}
 					} else {
-						log("error decoding public key: " + k.Pubkey + " " + err.Error())
+						log.Err("error decoding public key: " + k.Pubkey + " " + err.Error())
 					}
 				}
 				if strings.Contains(e.Event.PubKey, k.Pubkey) {
-					log("rejecting for public key: " + k.Pubkey)
+					log.Info("rejecting for public key: " + k.Pubkey)
 					badResp = "blocked public key " + k.Pubkey + " reason: " + k.Reason
 					allowMessage = false
 				}
@@ -424,7 +337,7 @@ func main() {
 				dEvent := strings.ToLower(e.Event.Content)
 				dKeyword := strings.ToLower(k.Keyword)
 				if strings.Contains(dEvent, dKeyword) {
-					log("rejecting for keyword: " + k.Keyword)
+					log.Info("rejecting for keyword: " + k.Keyword)
 					badResp = "blocked. " + k.Keyword + " reason: " + k.Reason
 					allowMessage = false
 				}
@@ -437,7 +350,7 @@ func main() {
 		}
 
 		r, _ := json.Marshal(result)
-		_, err := output.WriteString(fmt.Sprintf("%s\n", r))
+		_, err = output.WriteString(fmt.Sprintf("%s\n", r))
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr,
 				"error writing output: %s\n", err)
