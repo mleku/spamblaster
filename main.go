@@ -2,10 +2,13 @@ package main
 
 import (
 	"bufio"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/mleku/spamblaster/pkg/creator"
-	"github.com/mleku/spamblaster/pkg/logger"
+	"github.com/mleku/ec/schnorr"
+	"github.com/mleku/replicatr/pkg/nostr/kind"
+	"github.com/relaytools/spamblaster/pkg/creator"
+	"github.com/relaytools/spamblaster/pkg/logger"
 	"io"
 	"net/http"
 	"os"
@@ -15,18 +18,26 @@ import (
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
-	"github.com/mleku/spamblaster/pkg/strfry"
-	"github.com/nbd-wtf/go-nostr/nip19"
+	"github.com/mleku/signr/pkg/nostr"
+	"github.com/relaytools/spamblaster/pkg/strfry"
 	"github.com/spf13/viper"
 )
 
-func decodePub(pubKey string) string {
-	if strings.Contains(pubKey, "npub") {
-		if _, v, err := nip19.Decode(pubKey); err == nil {
-			pubKey = v.(string)
-		}
+func NpubToHex(npub string) (pk string) {
+	p, err := nostr.NpubToPublicKey(npub)
+	if err != nil {
+		log.Err(fmt.Sprintf("error decoding pubkey: %v", err))
+	} else {
+		pk = hex.EncodeToString(schnorr.SerializePubKey(p))
 	}
-	return pubKey
+	return
+}
+
+func decodePub(npub string) (hexPub string) {
+	if strings.Contains(npub, "npub") {
+		hexPub = NpubToHex(npub)
+	}
+	return
 }
 
 func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
@@ -178,7 +189,7 @@ func main() {
 		badResp := ""
 
 		// moderation retroactive delete
-		if e.Event.Kind == strfry.MemoryHole {
+		if e.Event.Kind == kind.MemoryHole {
 			isModAction := false
 			for _, m := range relay.Moderators {
 				usePub := decodePub(m.User.Pubkey)
@@ -263,9 +274,8 @@ func main() {
 		if !relay.DefaultMessagePolicy {
 			// relay is in whitelist pubkey mode, only allow these pubkeys to post
 			for _, k := range relay.AllowList.ListPubkeys {
-				if strings.Contains(k.Pubkey, "npub") {
-					if _, v, err := nip19.Decode(k.Pubkey); err == nil {
-						pub := v.(string)
+				if strings.HasPrefix(k.Pubkey, "npub") {
+					if pub := NpubToHex(k.Pubkey); err == nil {
 						if strings.Contains(e.Event.PubKey, pub) {
 							log.Err("allowing whitelist for public key: " + k.Pubkey)
 							allowMessage = true
@@ -305,8 +315,7 @@ func main() {
 			// relay is in blacklist pubKey mode, mark bad
 			for _, k := range relay.BlockList.ListPubkeys {
 				if strings.Contains(k.Pubkey, "npub") {
-					if _, v, err := nip19.Decode(k.Pubkey); err == nil {
-						pub := v.(string)
+					if pub := NpubToHex(k.Pubkey); err == nil {
 						if strings.Contains(e.Event.PubKey, pub) {
 							log.Info("rejecting for public key: " + k.Pubkey)
 							badResp = "blocked public key " + k.Pubkey + " reason: " + k.Reason

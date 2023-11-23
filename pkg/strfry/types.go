@@ -2,8 +2,6 @@ package strfry
 
 import "github.com/mleku/replicatr/pkg/nostr"
 
-const MemoryHole = 1984
-
 // Event is the JSON format of events (from stdin)
 type Event struct {
 	Event      nostr.Event `json:"event"`
