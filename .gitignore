@@ -1,3 +1,5 @@
 dist/
 spamblaster
 /strfry.json
+/strfry-db/!.keep
+/strfry-db/

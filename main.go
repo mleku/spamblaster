@@ -86,7 +86,7 @@ func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
 }
 
 // initialise logger
-var log = logger.NewLogger()
+var log = logger.NewLogger("spamblaster")
 
 type influxdbConfig struct {
 	Url         string `mapstructure:"INFLUXDB_URL"`
@@ -100,14 +100,7 @@ func main() {
 	var err error
 	var reader = bufio.NewReader(os.Stdin)
 	var output = bufio.NewWriter(os.Stdout)
-	// close logger properly
-	defer func() {
-		err = log.Close()
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr,
-				"error closing logger: %s\n", err)
-		}
-	}()
+
 	// close output writer properly
 	defer func() {
 		err = output.Flush()
