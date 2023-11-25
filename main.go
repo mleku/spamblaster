@@ -112,6 +112,8 @@ func main() {
 	var reader = bufio.NewReader(os.Stdin)
 	var output = bufio.NewWriter(os.Stdout)
 
+	log.Info("starting up spamblaster")
+
 	// close output writer properly
 	defer func() {
 		err = output.Flush()

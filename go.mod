@@ -5,6 +5,7 @@ go 1.21
 toolchain go1.21.4
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/influxdata/influxdb-client-go/v2 v2.12.3
 	github.com/mleku/ec v1.0.2
 	github.com/mleku/replicatr v0.0.3
