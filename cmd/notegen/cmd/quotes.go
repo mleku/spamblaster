@@ -1,8 +1,8 @@
-package main
+package cmd
 
 type Source struct {
-	Source     string
-	Paragraphs []string
+	Source     string   
+	Paragraphs []string 
 }
 
 var quotes = []Source{
@@ -15,7 +15,7 @@ var quotes = []Source{
 			`I never fucked anybody over in my life didn't have it coming to them. You got that? All I have in this world is my balls and my word and I don't break them for no one. Do you understand? That piece of shit up there, I never liked him, I never trusted him. For all I know he had me set up and had my friend Angel Fernandez killed. But that's history. I'm here, he's not. Do you wanna go on with me, you say it. You don't, then you make a move.`,
 			`Okay Sosa; You wanna fuck with me? You fucking with the best! You wanna fuck with me? Okay. You little cockroaches... come on. You wanna play games? Okay, I play with you; come on. Okay. You wanna play rough? Okay. Say hello to my little friend!`,
 			`Is this it? That's what it's all about, Manny? Eating, drinking, fucking, sucking? Snorting? Then what? You're 50. You got a bag for a belly. You got tits, you need a bra. They got hair on them. You got a liver, they got spots on it, and you're eating this fuckin' shit, looking like these rich fucking mummies in here... Look at that. A junkie. I got a fuckin' junkie for a wife. She don't eat nothing. Sleeps all day with them black shades on. Wakes up with a Quaalude, and who won't fuck me 'cause she's in a coma. I can't even have a kid with her, Manny. Her womb is so polluted, I can't even have a fuckin' little baby with her!`,
-		},
+			},
 	},
 	{
 		Source: "Anthony Hopkins",
@@ -29,7 +29,7 @@ var quotes = []Source{
 			`Dear Clarice, I have followed with enthusiasm the course of your disgrace and public shaming. My own never bothered me, except for the inconvenience of being incarcerated, but you may lack perspective. In our discussions down in the dungeon, it was apparent to me that your father, the dead night watchman, figures largely in your value system. I think your success in putting an end to Jame Gumb's career as a couturier pleased you most because you could imagine your father being pleased. But now, alas, you're in bad odour with the FBI. Do you imagine your daddy being shamed by your disgrace? Do you see him in his plain pine box crushed by your failure; a sorry, petty end of a promising career? What is worst about this humiliation, Clarice?`,
 			`Is it how your failure will reflect on your mommy and daddy? Is your worst fear that people will now and forever believe they were indeed just good old trailer-camp tornado-bait white trash, and that perhaps you are too? By the way I couldn't help noticing on the FBI's rather dull public website that I have been hoisted from the Bureau's archives of the common criminal and elevated to the more prestigious 10 Most Wanted list. Is this coincidence, or are you back on the case? If so, goody goody, 'cause I need to come out of retirement and return to public life. I imagine you sitting in a dark basement room bent over papers and computer screens. Is that accurate? Please tell me truly, Special Agent Starling.`,
 			`You know, the, um... this album was recorded in a famous studio in London. I was told, uh, I should be very honored because the Beatles had been there. Do you know the Beatles?`,
-		},
+			},
 	},
 	{
 		Source: "Charlize Theron",
@@ -43,7 +43,7 @@ var quotes = []Source{
 			`I could. I could say that, right? But then it wouldn't make sense why I would fly myself half a billion miles from every man on Earth if I wanted to get laid, would it?`,
 			`Weyland found you impressive enough to fund this mission. But I'm fairly certain your Engineers are nothing but scribblings of savages living in dirty little caves. But let's say I'm wrong, and you do find these beings down there, you won't engage them, you won't talk to them. You will do nothing but report back to me.`,
 			`Did you really think I was gonna sit in a boardroom for years arguing over who was in charge while you go look for some miracle on some godforsaken rock in the middle of space? A king has his reign, and then he dies. It's inevitable. That is natural order of things.`,
-		},
+			},
 	},
 	{
 		Source: "Christopher Walken",
@@ -56,7 +56,7 @@ var quotes = []Source{
 			`You been with a woman, Zophael? It's like dying... you moan, cry out. You get to a spot that has you begging for release. Once, I was an Angel of Death... now, I die every day... when I have the cash.`,
 			`You're talking to me all wrong... It's the wrong tone. You do it again and I'll stab you in the face with a soldering iron. Hey, tell me, does your mother sew? BOOM. Get her to sew that!`,
 			`A man can be an artist... in anything, food, whatever. It depends on how good he is at it. Creasey's art is death. He's about to paint his masterpiece.`,
-		},
+			},
 	},
 	{
 		Source: "Clint Eastwood",
@@ -66,7 +66,7 @@ var quotes = []Source{
 			`I know what you're thinking. Did he fire six shots or only five? Well to tell you the truth in all this excitement I've kinda lost track myself. But being this is a .44 Magnum - the most powerful hand gun in the world and would blow your head clean off, you've got to ask yourself one question: Do I feel lucky? Well, do ya punk!`,
 			`Now remember, things look bad and it looks like you're not gonna make it, then you gotta get mean. I mean plumb, mad-dog mean. ‘Cause if you lose your head and you give up then you neither live nor win. That's just the way it is.`,
 			`I'm not doing this because I want to take long showers with you assholes and I don't want to get my head shot off in some far away land because you don't habla, comprende?`,
-		},
+			},
 	},
 	{
 		Source: "Daisy Ridley",
@@ -75,7 +75,7 @@ var quotes = []Source{
 			`You don't have to do this. I feel the conflict in you. It's tearing you apart. Ben, when we touched hands, I saw your future. Just the shape of it but solid and clear. You will not bow before Snoke. You'll turn. I'll help you.`,
 			`And a Jedi who saved him. Yes. Your father was the most hated man in the galaxy. He caused so much death and destruction for many years. But you saw there was conflict inside him. You believed that he wasn't gone. That he could be turned.`,
 			`You failed him by thinking his choice was made. It wasn't! There's still conflict in him. If he would turn from the Dark Side, that could shift the tide! This could be how we win!`,
-		},
+			},
 	},
 	{
 		Source: "George Washington",
@@ -88,7 +88,7 @@ var quotes = []Source{
 			`Nothing is more essential, than that permanent, inveterate antipathies against particular Nations, and passionate attachments for others, should be excluded; and that, in place of them, just and amicable feelings towards all should be cultivated. The Nation, which indulges towards another an habitual hatred, or an habitual fondness, is in some degree a slave. It is a slave to its animosity or to its affection, either of which is sufficient to lead it astray from its duty and its interest. Antipathy in one nation against another disposes each more readily to offer insult and injury, to lay hold of slight causes of umbrage, and to be haughty and intractable, when accidental or trifling occasions of dispute occur. Hence frequent collisions, obstinate, envenomed, and bloody contests.`,
 			`Harmony, liberal intercourse with all nations, are recommended by policy, humanity, and interest.`,
 			`Though, in reviewing the incidents of my administration, I am unconscious of intentional error, I am nevertheless too sensible of my defects not to think it probable that I may have committed many errors. Whatever they may be, I fervently beseech the Almighty to avert or mitigate the evils to which they may tend. I shall also carry with me the hope, that my Country will never cease to view them with indulgence; and that, after forty-five years of my life dedicated to its service with an upright zeal, the faults of incompetent abilities will be consigned to oblivion, as myself must soon be to the mansions of rest.`,
-		},
+			},
 	},
 	{
 		Source: "Harrison Ford",
@@ -98,7 +98,7 @@ var quotes = []Source{
 			`Oh, Marcus. What are you trying to do, scare me? You sound like my mother. We've known each other for a long time. I don't believe in magic, a lot of superstitious hocus pocus. I'm going after a find of incredible historical significance, you're talking about the boogie man. Besides, you know what a cautious fellow I am.`,
 			`This site also demonstrates one of the great dangers of archaeology; not to life and limb, although that does sometimes take place. I'm talking about folklore.`,
 			`You know what that means to me? He had his arm around her here, like this. He could have had a gun, like this. Pointed right at her. Shut up! Smile! Walk! Out the lobby! Huh, like this. Huh?`,
-		},
+			},
 	},
 	{
 		Source: "HP Lovecraft",
@@ -110,7 +110,7 @@ var quotes = []Source{
 			`Contrary to what you may assume, I am not a pessimist but an indifferentist- that is, I don't make the mistake of thinking that the... cosmos... gives a damn one way or the other about the especial wants and ultimate welfare of mosquitoes, rats, lice, dogs, men, horses, pterodactyls, trees, fungi, dodos, or other forms of biological energy.`,
 			`There are not many persons who know what wonders are opened to them in the stories and visions of their youth; for when as children we learn and dream, we think but half-formed thoughts, and when as men we try to remember, we are dulled and prosaic with the poison of life. But some of us awake in the night with strange phantasms of enchanted hills and gardens, of fountains that sing in the sun, of golden cliffs overhanging murmuring seas, of plains that stretch down to sleeping cities of bronze and stone, and of shadowy companies of heroes that ride caparisoned white horses along the edges of thick forests; and then we know that we have looked back through the ivory gates into that world of wonder which was ours before we were wise and unhappy.`,
 			`All I say is that I think it is damned unlikely that anything like a central cosmic will, a spirit world, or an eternal survival of personality exist. They are the most preposterous and unjustified of all the guesses which can be made about the universe, and I am not enough of a hair-splitter to pretend that I don't regard them as arrant and negligible moonshine. In theory I am an agnostic, but pending the appearance of radical evidence I must be classed, practically and provisionally, as an atheist.`,
-		},
+			},
 	},
 	{
 		Source: "Jack Nicholson",
@@ -123,7 +123,7 @@ var quotes = []Source{
 			`Let me explain something to you, Dave. There are two kinds of angry people in this world: explosive and implosive. Explosive is the kind of individual you see screaming at the cashier for not taking their coupons. Implosive is the cashier who remains quiet day after day and finally shoots everyone in the store. You're the cashier.`,
 			`Now then we need to go over some ground rules. You are to refrain from any any acts of violence including verbal assault and vulgar hand gestures. You may not use rage enhancing substances, such as caffeine, nicotine, alcohol, crack cocaine, slippy-flippy's, jelly stingers, trick sticks, bing bangs or flying willards.`,
 			`Under my supervision. Also, if you are unable to stop masturbating, please do so without the use of any pornographic images depicting quote, unquote 'angry sex.' That having been said, I'm a pretty good guy and I think you'll be pleasantly surprised how much fun we can have together.`,
-		},
+			},
 	},
 	{
 		Source: "Jennifer Lawrence",
@@ -139,7 +139,7 @@ var quotes = []Source{
 			`Not that I give a fuck about football or about your superstitions, but if it's me reading the signs, I don't send the Eagles guy whose personal motto is "Excelsior," to a fucking Giants game, especially when he's already in a legal situation.`,
 			`You might not of had experienced the shit that I did, but you loved hearing about it, didn't you? You're afraid to be alive, you're afraid to live. You're a conformist. You're a hypocrite. You're a liar. I opened up to you and you judged me!`,
 			`I saw the way you were looking at me, Pat. You felt it, I felt it, don't lie. We're not liars like they are. I live in the addition around back, which is completely separate from my parents' house, so there's no chance of them walking in on us. I hate the fact that you wore a football jersey to dinner because I hate football, but you can fuck me if you turn the lights off, okay?`,
-		},
+			},
 	},
 	{
 		Source: "Jim Carrey",
@@ -152,7 +152,7 @@ var quotes = []Source{
 			`Simmons is old. He should've been out of the game years ago but he can't stay home because he hates his wife. You've met her at the Christmas parties, she's the one that gets plastered and calls him a retard, and you, Tom; you're the biggest brownnose I've ever seen. You've got your head so far up Mr. Allen's ass, I can't tell where you end and he begins. [...] You have bad breath caused by gingivitis. You couldn't get a porn star off. Your hairpiece looks like something that was killed crossing the highway. I don't know whether to comb it or scrape it off with a shovel and bury it in lime. Loser! Idiot! Wimp! Degenerate! SLUUUUUUUTTT!`,
 			`Nothing! Because if I take it to small claims court, it will just drain eight hours out of my life and you probably won't show up and even if I got the judgment you'd just stiff me anyway; so what I am going to do is piss and moan like an impotent jerk, and then bend over and take it up the tailpipe!`,
 			`Here it goes: I sped. I followed too closely. I ran a stop sign. I almost hit a Chevy. I sped some more. I failed to yield at a crosswalk. I changed lanes at an intersection. I changed lanes without signaling while running a red light and SPEEDING!`,
-		},
+			},
 	},
 	{
 		Source: "Jodie Foster",
@@ -165,7 +165,7 @@ var quotes = []Source{
 			`... li'l punk kids... Sid Vicious spewing beer from his teeth in the Chelsea Hotel... Andy Warhol, his sunglasses reflecting... Edgar Allan Poe, freeing live monkeys from the crates of a crumbling schooner on the oily slips of South Street. Stories of a city that is disappearing before our eyes, its people swept over the Williamsburg of those stories. So what are we left of those stories? Are we going to have to construct an imaginary city to house our memories?`,
 			`Because when you love something, every time a bit goes, you lose a piece of yourself. Where's Eloise going to sleep tonight? Can you hear her ghost wandering around the collapsing corridors of her beloved Plaza, trying to find her nanny's room? Calling out to the construction workers, in a voice that nobody hears, "Has anyone seen my turtle, Skipperdee?" This is Erica Bain, and you've been listening to Streetwalk, on WKNW.`,
 			`I always believed that fear belonged to other people. Weaker people. It never touched me. And then it did. And when it touches you, you know... that it's been there all along. Waiting beneath the surfaces of everything you loved.`,
-		},
+			},
 	},
 	{
 		Source: "Johnny Depp",
@@ -179,7 +179,7 @@ var quotes = []Source{
 			`Have you not met Will Turner? He's noble, heroic, terrific soprano! Worth at least four. Maybe 3 and a half. And did I happen to mention? He's in love with a girl. Due to be married. Betrothed. Dividing him from her and her from him would only be half as cruel as actually allowing tham to be joined together in holy matrimony, eh?`,
 			`Darling, I am truly unhappy to have to tell you this, but through an unfortunate and entirely unforseeable series of circumstances that have nothing whatsoever to do with me...poor Will was press-ganged into Davy Jones's crew.`,
 			`Ah, but fortunately I know how to counter it: The man who did the waking buys the man who was sleeping a drink; and then the man who was sleeping drinks it while listening to a proposition from the man who did the waking.`,
-		},
+			},
 	},
 	{
 		Source: "Leonardo DiCaprio",
@@ -196,7 +196,7 @@ var quotes = []Source{
 			`"I will split up my father's empire." Now, this is obviously an idea that Robert himself would choose to reject. Which is why we need to plant it deep in his subconscious. Subconscious is motivated by emotion, right? Not reason. We need to find a way to translate this into an emotional concept.`,
 			`Well dreams, they feel real while we're in them, right? It's only when we wake up that we realize how things are actually strange. Let me ask you a question, you, you never really remember the beginning of a dream do you? You always wind up right in the middle of what's going on.`,
 			`To wake up from that after, after years, after decades... after we'd become old souls thrown back into youth like that... I knew something was wrong with her. She just wouldn't admit it. Eventually, she told me the truth. She was possessed by an idea, this one, very simple idea, that changed everything. That our world wasn't real. That she needed to wake up to come back to reality, that, in order to get back home, we had to kill ourselves.`,
-		},
+			},
 	},
 	{
 		Source: "Master Yoda",
@@ -206,7 +206,7 @@ var quotes = []Source{
 			`Yes, run! Yes, a Jedi's strength flows from the Force. But beware of the dark side. Anger, fear, aggression; the dark side of the Force are they. Easily they flow, quick to join you in a fight. If once you start down the dark path, forever will it dominate your destiny, consume you it will, as it did Obi-Wan's apprentice.`,
 			`Stopped they must be; on this all depends. Only a fully trained Jedi Knight, with the Force as his ally, will conquer Vader and his Emperor. If you end your training now - if you choose the quick and easy path as Vader did - you will become an agent of evil.`,
 			`Remember, a Jedi's strength flows from the Force. But beware. Anger, fear, aggression. The dark side are they. Once you start down the dark path, forever will it dominate your destiny. Luke... Luke... do not... do not underestimate the powers of the Emperor or suffer your father's fate you will. Luke, when gone am I... the last of the Jedi will you be. Luke, the Force runs strong in your family. Pass on what you have learned, Luke. There is... another... Sky... walker.`,
-		},
+			},
 	},
 	{
 		Source: "Matt Damon",
@@ -218,7 +218,7 @@ var quotes = []Source{
 			`See, the sad thing about a guy like you is, in 50 years you're gonna start doin' some thinkin' on your own and you're going to come up with the fact that there are two certainties in life: one, don't do that, and two, you dropped 150 grand on a fuckin' education you could have got for a dollar fifty in late charges at the public library!`,
 			`But what do you need a financial advisor for? Twenty years ago you had the highest Gross National Product in the world, now you're tied with Albania. Your second largest export is secondhand goods, closely followed by dates which you're losing five cents a pound on... You know what the business community thinks of you? They think that a hundred years ago you were living in tents out here in the desert chopping each other's heads off and that's where you'll be in another hundred years, so, yes, on behalf of my firm I accept your money.`,
 			`I can tell you the license plate numbers of all six cars outside. I can tell you that our waitress is left-handed and the guy sitting up at the counter weighs two hundred fifteen pounds and knows how to handle himself. I know the best place to look for a gun is the cab or the gray truck outside, and at this altitude, I can run flat out for a half mile before my hands start shaking. Now why would I know that? How can I know that and not know who I am?`,
-		},
+			},
 	},
 	{
 		Source: "Mel Gibson",
@@ -227,7 +227,7 @@ var quotes = []Source{
 			`Look around you. In the 7th Cavalry, we got a Captain from the Ukraine. Another from Puerto Rico. We've got Japanese, Chinese, Blacks, Hispanics, Cherokee Indians, Jews and Gentiles - all Americans. Now here in the States, some men in this unit may experience discrimination because of race or creed. But for you and me now, all that is gone. We're moving into the valley of the shadow of death, where you will watch the back of the man next to you, as he will watch yours. And you won't care what color he is or by what name he calls God. They say we're leavin' home. We're goin' to what home was always supposed to be. So let us understand the situation. We are goin' into battle against a tough and determined enemy. I can't promise you that I will bring you all home alive. But this I swear before you and before Almighty God that when we go into battle, I will be the first to set foot on the field, and I will be the last to step off. And I will leave no one behind. Dead or alive, we will all come home together. So help me God.`,
 			`People break down into two groups when the experience something lucky. Group number one sees it as more than luck, more than coincidence. They see it as a sign, evidence, that there is someone up there, watching out for them. Group number two sees it as just pure luck. Just a happy turn of chance. I'm sure the people in Group number two are looking at those fourteen lights in a very suspicious way. For them, the situation isn't fifty-fifty. Could be bad, could be good. But deep down, they feel that whatever happens, they're on their own. And that fills them with fear. Yeah, there are those people. But there's a whole lot of people in the Group number one. When they see those fourteen lights, they're looking at a miracle. And deep down, they feel that whatever's going to happen, there will be someone there to help them. And that fills them with hope. See what you have to ask yourself is what kind of person are you? Are you the kind that sees signs, sees miracles? Or do you believe that people just get lucky? Or, look at the question this way: Is it possible that there are no coincidences?`,
 			`I can't promise you that I will bring you all home alive. But this I swear, before you and before Almighty God, that when we go into battle, I will be the first to set foot on the field, and I will be the last to step off, and I will leave no one behind. Dead or alive, we will all come home together. So help me, God.`,
-		},
+			},
 	},
 	{
 		Source: "Michael Caine",
@@ -239,7 +239,7 @@ var quotes = []Source{
 			`Well, because he thought it was good sport. Because some men aren’t looking for anything logical, like money. They can’t be bought, bullied, reasoned, or negotiated with. Some men just want to watch the world burn.`,
 			`It means your hatred. And it also means losing someone that I have cared for since I first heard his cries echo through this house. But it might also mean saving your life. And that is more important.`,
 			`You see only one end to your journey. Leaving is all I have to make you understand. You’re not Batman anymore. You have to find another way. You used to talk about finishing, about a life beyond that awful cave.`,
-		},
+			},
 	},
 	{
 		Source: "Michel Houellebecq",
@@ -249,7 +249,7 @@ var quotes = []Source{
 			`An entire life spent reading would have fulfilled my every desire; I already knew that at the age of seven. The texture of the world is painful, inadequate; unalterable, or so it seems to me. Really, I believe that an entire life spent reading would have suited me best. Such a life has not been granted me...`,
 			`Life is painful and disappointing. It is useless, therefore, to write new realistic novels. We generally know where we stand in relation to reality and don’t care to know any more.`,
 			`Irony won't save you from anything; humour doesn't do anything at all. You can look at life ironically for years, maybe decades; there are people who seem to go through most of their lives seeing the funny side, but in the end, life always breaks your heart. Doesn't matter how brave you are, or how reserved, or how much you've developed a sense of humour, you still end up with your heart broken. That's when you stop laughing.`,
-		},
+			},
 	},
 	{
 		Source: "Mikhail Gorbachev",
@@ -264,7 +264,7 @@ var quotes = []Source{
 			`I am an optimist and I believe that together we shall be able now to make the right historical choice so as not to miss the great chance at the turn of centuries and millenia and make the current extremely difficult transition to a peaceful world order. A balance of interests rather than a balance of power, a search for compromise and concord rather than a search for advantages at other people's expense, and respect for equality rather than claims to leadership — such are the elements which can provide the groundwork for world progress and which should be readily acceptable for reasonable people informed by the experience of the twentieth century. The future prospect of truly peaceful global politics lies in the creation through joint efforts of a single international democratic space in which States shall be guided by the priority of human rights and welfare for their own citizens and the promotion of the same rights and similar welfare elsewhere. This is an imperative of the growing integrity of the modern world and of the interdependence of its components.`,
 			`Have we not been able to cross the threshold of mistrust, though mistrust has not completely disappeared? Has not the political thinking in the world changed substantially? Does not most of the world community already regard weapons of mass destruction as unacceptable for achieving political objectives?`,
 			`I view the award of the Nobel Prize to me as an expression of understanding of my intentions, my aspirations, the objectives of the profound transformation we have begun in our country, and the ideas of new thinking. I see it as your acknowledgment of my commitment to peaceful means of implementing the objectives of perestroika.`,
-		},
+			},
 	},
 	{
 		Source: "Morgan Freeman",
@@ -280,7 +280,7 @@ var quotes = []Source{
 			`In 1966, Andy Dufresne escaped from Shawshank prison. All they found of him was a muddy set of prison clothes, a bar of soap, and an old rock hammer, damn near worn down to the nub. I remember thinking it would take a man six hundred years to tunnel through the wall with it. Old Andy did it in less than twenty. Oh, Andy loved geology. I imagine it appealed to his meticulous nature. An ice age here, million years of mountain building there. Geology is the study of pressure and time. That's all it takes really, pressure, and time. That, and a big goddamn poster. Like I said, in prison a man will do most anything to keep his mind occupied. Turns out Andy's favorite hobby was totin' his wall out into the exercise yard, a handful at a time. I guess after Tommy was killed, Andy decided he'd been here just about long enough. Andy did like he was told, buffed those shoes to a high mirror shine. The guards simply didn't notice. Neither did I... I mean, seriously, how often do you really look at a mans shoes? Andy crawled to freedom through five hundred yards of shit smelling foulness I can't even imagine, or maybe I just don't want to. Five hundred yards... that's the length of five football fields, just shy of half a mile.`,
 			`I could see why some of the boys took him for snobby. He had a quiet way about him, a walk and a talk that just wasn't normal around here. He strolled, like a man in a park without a care or a worry in the world, like he had on an invisible coat that would shield him from this place. Yeah, I think it would be fair to say... I liked Andy from the start.`,
 			`There's a harsh truth to face. No way I'm gonna make it on the outside. All I do anymore is think of ways to break my parole, so maybe they'd send me back. Terrible thing, to live in fear. Brooks Hatlen knew it. Knew it all too well. All I want is to be back where things make sense. Where I won't have to be afraid all the time. Only one thing stops me. A promise I made to Andy.`,
-		},
+			},
 	},
 	{
 		Source: "Robin Williams",
@@ -292,7 +292,7 @@ var quotes = []Source{
 			`You're not perfect, sport, and let me save you the suspense: this girl you've met, she's not perfect either. But the question is whether or not you're perfect for each other.`,
 			`No, I'm not kiddin' you, Will. That's why I'm not talkin' right now about some girl I saw at a bar twenty years ago and how I always regretted not going over and talking to her. I don't regret the 18 years I was married to Nancy. I don't regret the six years I had to give up counseling when she got sick. And I don't regret the last years when she got really sick. And I sure as hell don't regret missin' the damn game. That's regret.`,
 			`Yep. Day of the game. I was sittin' in a bar, waitin' for the game to start, and in walks this girl. Oh, it was an amazing game, though. You know, bottom of the eighth, Carbo ties it up at 6-6. It went to twelve. Bottom of the twelfth, in stepped Carlton Fisk. Old Pudge. Steps up to the plate, you know, and he's got that weird stance.`,
-		},
+			},
 	},
 	{
 		Source: "Samuel L. Jackson",
@@ -304,7 +304,7 @@ var quotes = []Source{
 			`Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Did you see a little Asian child with a blank expression sitting outside in a mechanical helicopter that shakes when you put quarters in it?`,
 			`AK-47, the very best there is. When you absolutely, positively have to kill every single motherf*cker in the room; accept no substitute.`,
 			`Normally, both your asses would be dead as f*cking fried chicken, but you happen to pull this shit while I'm in a transitional period so I don't wanna kill you, I wanna help you.`,
-		},
+			},
 	},
 	{
 		Source: "Tom Ellis",
@@ -320,7 +320,7 @@ var quotes = []Source{
 			`It's what I'm saying. You deserve someone better. Because you, Detective, are selfless to a nauseating degree. You always put your daughter first, even though the ungrateful urchin does nothing to contribute to the rent. So... You deserve someone worthy of that grace. Someone who knows that every crime scene breaks your heart, even though you'd never admit it. Someone who actually appreciates your impossibly boring middle name, "Jane". And more importantly, Detective, you deserve someone as good as you. Because, well, you're special and I'm... I'm not worth it.`,
 			`There was this, ah, soul that I used to torture back in Hell. And like a good masochist, he'd call the shots. "Burn me. Freeze me. Hurt me." So, I did. And this went on for centuries. Until, one day, for some reason, he missed his daily punishment. And when I returned, he was crying. "Please, my king," he said, "Don't ever forget me again. I promise I'll be good." It was then that I realized he was so full of self-loathing, void of any self-respect, that no matter the depth of my cruelty, whatever minuscule attention I paid, gave meaning to his... pointless existence.`,
 			`How am I supposed to solve the mystery of how to kill you if I don't understand you first? Your strengths, your weaknesses, because everyone has a kryptonite, Lieutenant.`,
-		},
+			},
 	},
 	{
 		Source: "Tommy Lee Jones",
@@ -328,6 +328,6 @@ var quotes = []Source{
 			`I was Sheriff of this county when I was 25 years old. Hard to believe. My grandfather was a lawman, father too. Me and him was sheriffs at the same time, him up in Plano and me out here. I think he's pretty proud of that. I know I was. Some of the old time Sheriffs never even wore a gun. A lotta folks find that hard to believe. Jim Scarborough'd never carry one - that's the younger Jim. Gaston Borkins wouldn't wear one up in Comanche County. I always liked to hear about the old-timers. Never missed a chance to do so. You can't help but compare yourself against the old-timers. Can't help but wonder how they'd have operated in these times. `,
 			`There was this boy I sent to the 'lectric chair at Huntsville here awhile back. My arrest and my testimony. He killed a 14 year-old girl. Papers said it was a crime of passion, but he told me there wasn't any passion to it. Told me that he'd been plannin' to kill somebody for about as long as he could remember. Said that if they turned him out, he'd do it again. Said he knew he was going to hell: 'Be there in about fifteen minutes.' I don't know what to make of that. I surely don't. The crime you see now, it's hard to even take its measure. It's not that I'm afraid of it. I always knew you had to be willin' to die to even do this job. But, I don't want to push my chips forward and go out and meet somethin' I don't understand. A man would have to put his soul at hazard. He'd have to say: 'OK., I'll be a part of this world'.`,
 			`Alright, listen up, people. Our fugitive has been on the run for ninety minutes. Average foot speed over uneven ground barring injuries is 4 miles-per-hour. That gives us a radius of six miles. What I want from each and every one of you is a hard-target search of every gas station, residence, warehouse, farmhouse, henhouse, outhouse and doghouse in that area. Checkpoints go up at fifteen miles. Your fugitive’s name is Dr. Richard Kimble. Go get him.`,
-		},
+			},
 	},
 }

@@ -1,13 +1,7 @@
 package main
 
-import (
-	"fmt"
-	"math/rand"
-)
+import "github.com/relaytools/spamblaster/cmd/notegen/cmd"
 
 func main() {
-	source := rand.Intn(len(quotes))
-	quote := rand.Intn(len(quotes[source].Paragraphs))
-	fmt.Printf("\"%s\"\n- %s\n", quotes[source].Paragraphs[quote],
-		quotes[source].Source)
+	cmd.Execute()
 }
