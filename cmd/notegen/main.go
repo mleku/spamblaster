@@ -1,14 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 func main() {
-	fmt.Println("num sources", len(quotes))
-	var total int
-	for i := range quotes {
-		n := len(quotes[i].Paragraphs)
-		fmt.Println("source", quotes[i].Source, "num quotes", n)
-		total += n
-	}
-	fmt.Println("total quotes", total)
+	source := rand.Intn(len(quotes))
+	quote := rand.Intn(len(quotes[source].Paragraphs))
+	fmt.Printf("\"%s\"\n- %s\n", quotes[source].Paragraphs[quote],
+		quotes[source].Source)
 }
