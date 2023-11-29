@@ -34,16 +34,21 @@ var quotes = []Source{
 
 func main() {
 	var jsons []string
-	filepath.Walk(".",
+	err := filepath.Walk(".",
 		func(path string, info fs.FileInfo, err error) (e error) {
 			if strings.HasSuffix(path, "json") {
 				jsons = append(jsons, path)
 			}
 			return
 		})
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
 	var quotes []Source
+	var data []byte
 	for i := range jsons {
-		data, err := os.ReadFile(jsons[i])
+		data, err = os.ReadFile(jsons[i])
 		if err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, "error:", err)
 			continue

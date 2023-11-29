@@ -5,10 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/mleku/ec/schnorr"
-	"github.com/mleku/replicatr/pkg/nostr/kind"
-	"github.com/relaytools/spamblaster/pkg/creator"
-	"github.com/relaytools/spamblaster/pkg/logger"
 	"io"
 	"net/http"
 	"os"
@@ -18,9 +14,13 @@ import (
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
-	"github.com/mleku/signr/pkg/nostr"
+	"github.com/relaytools/spamblaster/pkg/creator"
+	"github.com/relaytools/spamblaster/pkg/logger"
 	"github.com/relaytools/spamblaster/pkg/strfry"
 	"github.com/spf13/viper"
+	"mleku.online/git/ec/schnorr"
+	"mleku.online/git/replicatr/pkg/nostr/kind"
+	"mleku.online/git/signr/pkg/nostr"
 )
 
 func NpubToHex(npub string) (pk string) {

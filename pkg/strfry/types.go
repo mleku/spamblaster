@@ -1,6 +1,6 @@
 package strfry
 
-import "github.com/mleku/replicatr/pkg/nostr"
+import "mleku.online/git/replicatr/pkg/nostr"
 
 // Event is the JSON format of events (from stdin)
 type Event struct {
