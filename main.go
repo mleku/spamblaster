@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -17,28 +16,10 @@ import (
 	"github.com/relaytools/spamblaster/pkg/creator"
 	"github.com/relaytools/spamblaster/pkg/logger"
 	"github.com/relaytools/spamblaster/pkg/strfry"
+	"github.com/relaytools/spamblaster/pkg/util"
 	"github.com/spf13/viper"
-	"mleku.online/git/ec/schnorr"
 	"mleku.online/git/replicatr/pkg/nostr/kind"
-	"mleku.online/git/signr/pkg/nostr"
 )
-
-func NpubToHex(npub string) (pk string) {
-	p, err := nostr.NpubToPublicKey(npub)
-	if err != nil {
-		log.Err(fmt.Sprintf("error decoding pubkey: %v", err))
-	} else {
-		pk = hex.EncodeToString(schnorr.SerializePubKey(p))
-	}
-	return
-}
-
-func decodePub(npub string) (hexPub string) {
-	if strings.Contains(npub, "npub") {
-		hexPub = NpubToHex(npub)
-	}
-	return
-}
 
 func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
 
@@ -175,8 +156,9 @@ func main() {
 		var input, _ = reader.ReadString('\n')
 
 		var e strfry.Event
-		if err := json.Unmarshal([]byte(input), &e); err != nil {
-			panic(err)
+		if err = json.Unmarshal([]byte(input), &e); err != nil {
+			// this should not happen, just skip to the next
+			continue
 		}
 
 		result := strfry.Result{
@@ -194,7 +176,8 @@ func main() {
 		if e.Event.Kind == kind.MemoryHole {
 			isModAction := false
 			for _, m := range relay.Moderators {
-				usePub := decodePub(m.User.Pubkey)
+				var usePub string
+				usePub, err = util.DecodePub(m.User.Pubkey)
 				if usePub == e.Event.PubKey {
 					isModAction = true
 				}
@@ -253,7 +236,8 @@ func main() {
 				// event should be blank if we're getting a report about just a
 				// pubkey
 				if thisPubkey != "" && thisEvent == "" {
-					log.Info(fmt.Sprintf("received 1984 (memory hole) from mod: %s, block and delete public key <%s>, reason: %s",
+					log.Info(fmt.Sprintf("received 1984 (memory hole) from mod: %s,"+
+						" block and delete public key <%s>, reason: %s",
 						e.Event.PubKey, thisPubkey, thisReason))
 					// shell out
 					filter := fmt.Sprintf("{\"authors\": [\"%s\"]}", thisPubkey)
@@ -272,12 +256,14 @@ func main() {
 			}
 		}
 
+		var pub string
+
 		// pubkeys logic: false is deny, true is allow
 		if !relay.DefaultMessagePolicy {
 			// relay is in whitelist pubkey mode, only allow these pubkeys to post
 			for _, k := range relay.AllowList.ListPubkeys {
 				if strings.HasPrefix(k.Pubkey, "npub") {
-					if pub := NpubToHex(k.Pubkey); err == nil {
+					if pub, err = util.NpubToHex(k.Pubkey); err == nil {
 						if strings.Contains(e.Event.PubKey, pub) {
 							log.Err("allowing whitelist for public key: " + k.Pubkey)
 							allowMessage = true
@@ -295,7 +281,7 @@ func main() {
 		}
 
 		// keywords logic
-		if relay.AllowList.ListKeywords != nil && len(relay.AllowList.ListKeywords) >= 1 && !relay.DefaultMessagePolicy {
+		if len(relay.AllowList.ListKeywords) > 0 && !relay.DefaultMessagePolicy {
 			// relay has whitelist keywords, allow messages matching any of
 			// these keywords to post, deny messages that don't.
 			//
@@ -311,13 +297,12 @@ func main() {
 			}
 		}
 
-		if relay.BlockList.ListPubkeys != nil &&
-			len(relay.BlockList.ListPubkeys) >= 1 {
+		if len(relay.BlockList.ListPubkeys) > 0 {
 
 			// relay is in blacklist pubKey mode, mark bad
 			for _, k := range relay.BlockList.ListPubkeys {
 				if strings.Contains(k.Pubkey, "npub") {
-					if pub := NpubToHex(k.Pubkey); err == nil {
+					if pub, err = util.NpubToHex(k.Pubkey); err == nil {
 						if strings.Contains(e.Event.PubKey, pub) {
 							log.Info("rejecting for public key: " + k.Pubkey)
 							badResp = "blocked public key " + k.Pubkey + " reason: " + k.Reason
@@ -335,7 +320,7 @@ func main() {
 			}
 		}
 
-		if relay.BlockList.ListKeywords != nil && len(relay.BlockList.ListKeywords) >= 1 {
+		if len(relay.BlockList.ListKeywords) > 0 {
 			// relay has blacklist keywords, deny messages matching any of these keywords to post
 			for _, k := range relay.BlockList.ListKeywords {
 				dEvent := strings.ToLower(e.Event.Content)
