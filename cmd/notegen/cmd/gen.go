@@ -2,15 +2,18 @@ package cmd
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"github.com/spf13/cobra"
 	"math/rand"
 	secp "mleku.online/git/ec/secp"
-	"mleku.online/git/replicatr/pkg/nostr"
 	"mleku.online/git/replicatr/pkg/nostr/kind"
+	"mleku.online/git/replicatr/pkg/nostr/nip1"
+	"mleku.online/git/replicatr/pkg/nostr/tag"
+	"mleku.online/git/replicatr/pkg/nostr/tags"
+	ts "mleku.online/git/replicatr/pkg/nostr/time"
 	"mleku.online/git/signr/pkg/signr"
 	"time"
-
-	"github.com/spf13/cobra"
 )
 
 var wait int
@@ -44,33 +47,33 @@ web socket must have the proper wss:// or ws:// prefix as expected by the relay.
 		}
 
 		// pick random quote to use in content field of event
-		source := rand.Intn(len(quotes))
-		quote := rand.Intn(len(quotes[source].Paragraphs))
+		src := rand.Intn(len(quotes))
+		q := rand.Intn(len(quotes[src].Paragraphs))
 		quoteText := fmt.Sprintf("\"%s\"\n- %s\n",
-			quotes[source].Paragraphs[quote],
-			quotes[source].Source)
-		var tags nostr.Tags
+			quotes[src].Paragraphs[q],
+			quotes[src].Source)
+		var t tags.T
 		if len(args) > 2 {
 			// if there is a note ID given, add its tag.
-			tags = nostr.Tags{{"e", args[2], args[1], nostr.TagMarkerReply}}
+			t = tags.T{{"e", args[2], args[1], tag.MarkerReply}}
 		} else {
 			// if no note ID is given this is a root
-			tags = nostr.Tags{{"e", "", args[1], nostr.TagMarkerRoot}}
+			t = tags.T{{"e", "", args[1], tag.MarkerRoot}}
 		}
-		evt := nostr.Event{
-			CreatedAt: nostr.Now(),
+		ev := &nip1.Event{
+			CreatedAt: ts.Now(),
 			Kind:      kind.TextNote,
-			Tags:      tags,
+			Tags:      t,
 			Content:   quoteText,
 		}
 
 		// tag note with an ID and sign it
-		evt.ID = evt.GetID()
-		e = evt.Sign(hex.EncodeToString(sec.Serialize()))
+		ev.ID = ev.GetID()
+		e = ev.Sign(hex.EncodeToString(sec.Serialize()))
 		if e != nil {
 			s.Fatal("fatal error: %s\n", e)
 		}
-		b, _ := evt.MarshalJSON()
+		b, _ := json.Marshal(ev)
 		// wait prescribed time before dispatching event.
 		time.Sleep(time.Duration(wait) * time.Second)
 		s.Info("signed event JSON:\n%s\n", string(b))

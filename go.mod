@@ -7,7 +7,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	mleku.online/git/ec v1.0.4
-	mleku.online/git/replicatr v1.0.5
+	mleku.online/git/replicatr v1.0.6
 	mleku.online/git/signr v1.3.4
 )
 
