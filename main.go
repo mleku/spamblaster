@@ -89,7 +89,7 @@ type influxdbConfig struct {
 }
 
 func main() {
-	var err error
+	var e error
 	var reader = bufio.NewReader(os.Stdin)
 	var output = bufio.NewWriter(os.Stdout)
 
@@ -97,16 +97,16 @@ func main() {
 
 	// close output writer properly
 	defer func() {
-		err = output.Flush()
-		if err != nil {
+		e = output.Flush()
+		if e != nil {
 			_, _ = fmt.Fprintf(os.Stderr,
-				"error flushing output writer: %s\n", err)
+				"error flushing output writer: %s\n", e)
 		}
 	}()
 
 	var relay *creator.Relay
-	relay, err = queryRelay(relay)
-	if err != nil {
+	relay, e = queryRelay(relay)
+	if e != nil {
 		log.Err("there was an error fetching relay, using cache or nil")
 	}
 
@@ -114,8 +114,8 @@ func main() {
 	go func() {
 		for {
 			<-ticker.C
-			relay, err = queryRelay(relay)
-			if err != nil {
+			relay, e = queryRelay(relay)
+			if e != nil {
 				log.Err("there was an error fetching relay, using cache or nil")
 			}
 		}
@@ -155,14 +155,14 @@ func main() {
 	for {
 		var input, _ = reader.ReadString('\n')
 
-		var e strfry.Event
-		if err = json.Unmarshal([]byte(input), &e); err != nil {
+		var ev strfry.Event
+		if e = json.Unmarshal([]byte(input), &e); e != nil {
 			// this should not happen, just skip to the next
 			continue
 		}
 
 		result := strfry.Result{
-			ID:     e.Event.ID,
+			ID:     ev.ID,
 			Action: "accept",
 		}
 
@@ -173,26 +173,26 @@ func main() {
 		badResp := ""
 
 		// moderation retroactive delete
-		if e.Event.Kind == kind.MemoryHole {
+		if ev.Kind == kind.MemoryHole {
 			isModAction := false
 			for _, m := range relay.Moderators {
 				var usePub string
-				usePub, err = util.DecodePub(m.User.Pubkey)
-				if usePub == e.Event.PubKey {
+				usePub, e = util.DecodePub(m.User.Pubkey)
+				if usePub == ev.PubKey {
 					isModAction = true
 				}
 			}
-			if relay.Owner.Pubkey == e.Event.PubKey {
+			if relay.Owner.Pubkey == ev.PubKey {
 				isModAction = true
 			}
 			if isModAction {
 				log.Err(fmt.Sprintf("1984 (memory hole) request from %s>",
-					e.Event.PubKey))
+					ev.PubKey))
 				// perform deletion of a single event
 				// grab the event id
 				thisReason := ""
 				thisEvent := ""
-				for _, x := range e.Event.Tags {
+				for _, x := range ev.Tags {
 					if x[0] == "e" {
 						thisEvent = x[1]
 						if len(x) == 3 {
@@ -204,15 +204,16 @@ func main() {
 				if thisEvent != "" {
 					log.Info(fmt.Sprintf(
 						"received 1984 (memory hole) from mod: %s, delete event <%s>, reason: %s",
-						e.Event.PubKey, thisEvent, thisReason,
+						ev.PubKey, thisEvent, thisReason,
 					))
 					// shell out
 					filter := fmt.Sprintf("{\"ids\": [\"%s\"]}", thisEvent)
 					cmd := exec.Command("/app/strfry", "delete", "--filter",
 						filter)
-					out, err := cmd.Output()
-					if err != nil {
-						log.Err(fmt.Sprintln("could not run command: ", err))
+					var out []byte
+					out, e = cmd.Output()
+					if e != nil {
+						log.Err(fmt.Sprintln("could not run command: ", e))
 					}
 					log.Err(fmt.Sprintln("strfry command output: ",
 						string(out)))
@@ -224,7 +225,7 @@ func main() {
 				// block_list pubkey also delete the events related to this
 				// pubkey
 				thisPubkey := ""
-				for _, x := range e.Event.Tags {
+				for _, x := range ev.Tags {
 					if x[0] == "p" {
 						thisPubkey = x[1]
 						if len(x) == 3 {
@@ -238,7 +239,7 @@ func main() {
 				if thisPubkey != "" && thisEvent == "" {
 					log.Info(fmt.Sprintf("received 1984 (memory hole) from mod: %s,"+
 						" block and delete public key <%s>, reason: %s",
-						e.Event.PubKey, thisPubkey, thisReason))
+						ev.PubKey, thisPubkey, thisReason))
 					// shell out
 					filter := fmt.Sprintf("{\"authors\": [\"%s\"]}", thisPubkey)
 					cmd := exec.Command("/app/strfry", "delete", "--filter",
@@ -263,17 +264,17 @@ func main() {
 			// relay is in whitelist pubkey mode, only allow these pubkeys to post
 			for _, k := range relay.AllowList.ListPubkeys {
 				if strings.HasPrefix(k.Pubkey, "npub") {
-					if pub, err = util.NpubToHex(k.Pubkey); err == nil {
-						if strings.Contains(e.Event.PubKey, pub) {
+					if pub, e = util.NpubToHex(k.Pubkey); e == nil {
+						if strings.Contains(ev.PubKey, pub) {
 							log.Err("allowing whitelist for public key: " + k.Pubkey)
 							allowMessage = true
 						}
 					} else {
-						log.Err("error decoding public key: " + k.Pubkey + " " + err.Error())
+						log.Err("error decoding public key: " + k.Pubkey + " " + e.Error())
 					}
 				}
 
-				if strings.Contains(e.Event.PubKey, k.Pubkey) {
+				if strings.Contains(ev.PubKey, k.Pubkey) {
 					log.Info("allowing whitelist for public key: " + k.Pubkey)
 					allowMessage = true
 				}
@@ -288,7 +289,7 @@ func main() {
 			// todo: what about if they're allow_listed pubkey? (currently this
 			//  would allow either)
 			for _, k := range relay.AllowList.ListKeywords {
-				dEvent := strings.ToLower(e.Event.Content)
+				dEvent := strings.ToLower(ev.Content)
 				dKeyword := strings.ToLower(k.Keyword)
 				if strings.Contains(dEvent, dKeyword) {
 					log.Info("allowing for keyword: " + k.Keyword)
@@ -302,17 +303,17 @@ func main() {
 			// relay is in blacklist pubKey mode, mark bad
 			for _, k := range relay.BlockList.ListPubkeys {
 				if strings.Contains(k.Pubkey, "npub") {
-					if pub, err = util.NpubToHex(k.Pubkey); err == nil {
-						if strings.Contains(e.Event.PubKey, pub) {
+					if pub, e = util.NpubToHex(k.Pubkey); e == nil {
+						if strings.Contains(ev.PubKey, pub) {
 							log.Info("rejecting for public key: " + k.Pubkey)
 							badResp = "blocked public key " + k.Pubkey + " reason: " + k.Reason
 							allowMessage = false
 						}
 					} else {
-						log.Err("error decoding public key: " + k.Pubkey + " " + err.Error())
+						log.Err("error decoding public key: " + k.Pubkey + " " + e.Error())
 					}
 				}
-				if strings.Contains(e.Event.PubKey, k.Pubkey) {
+				if strings.Contains(ev.PubKey, k.Pubkey) {
 					log.Info("rejecting for public key: " + k.Pubkey)
 					badResp = "blocked public key " + k.Pubkey + " reason: " + k.Reason
 					allowMessage = false
@@ -323,7 +324,7 @@ func main() {
 		if len(relay.BlockList.ListKeywords) > 0 {
 			// relay has blacklist keywords, deny messages matching any of these keywords to post
 			for _, k := range relay.BlockList.ListKeywords {
-				dEvent := strings.ToLower(e.Event.Content)
+				dEvent := strings.ToLower(ev.Content)
 				dKeyword := strings.ToLower(k.Keyword)
 				if strings.Contains(dEvent, dKeyword) {
 					log.Info("rejecting for keyword: " + k.Keyword)
@@ -339,15 +340,15 @@ func main() {
 		}
 
 		r, _ := json.Marshal(result)
-		_, err = output.WriteString(fmt.Sprintf("%s\n", r))
-		if err != nil {
+		_, e = output.WriteString(fmt.Sprintf("%s\n", r))
+		if e != nil {
 			_, _ = fmt.Fprintf(os.Stderr,
-				"error writing output: %s\n", err)
+				"error writing output: %s\n", e)
 		}
-		err = output.Flush()
-		if err != nil {
+		e = output.Flush()
+		if e != nil {
 			_, _ = fmt.Fprintf(os.Stderr,
-				"error flushing Writer: %s\n", err)
+				"error flushing Writer: %s\n", e)
 		}
 
 		if influxEnabled {
@@ -360,7 +361,7 @@ func main() {
 			p := influxdb2.NewPoint(
 				iConfig.Measurement,
 				map[string]string{
-					"kind":  fmt.Sprintf("%d", e.Event.Kind),
+					"kind":  fmt.Sprintf("%d", ev.Kind),
 					"relay": relay.ID,
 				},
 				map[string]interface{}{

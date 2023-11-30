@@ -6,11 +6,11 @@ import (
 
 // Event is the JSON format of events (from stdin)
 type Event struct {
-	Event      nip1.Event `json:"event"`
-	ReceivedAt int        `json:"receivedAt"`
-	SourceInfo string     `json:"sourceInfo"`
-	SourceType string     `json:"sourceType"`
-	Type       string     `json:"type"`
+	nip1.Event `json:"event"` // embed for shorter member accessors
+	ReceivedAt int            `json:"receivedAt"`
+	SourceInfo string         `json:"sourceInfo"`
+	SourceType string         `json:"sourceType"`
+	Type       string         `json:"type"`
 }
 
 // Result are instructions for Strfry from a plugin in response to an Event
