@@ -21,16 +21,17 @@ import (
 	"mleku.online/git/replicatr/pkg/nostr/kind"
 )
 
-func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
+func queryRelay(oldRelay *creator.Relay) (r *creator.Relay, e error) {
 
-	var relay creator.Relay
+	r = &creator.Relay{}
 
 	// example spamblaster config
 	url := "http://127.0.0.1:3000/api/sconfig/relays/clkklcjon000wgh31mcgbut40"
 
-	body, err := os.ReadFile("./spamblaster.cfg")
-	if err != nil {
-		log.Err(fmt.Sprintf("unable to read config file: %v", err))
+	var body []byte
+	body, e = os.ReadFile("./spamblaster.cfg")
+	if e != nil {
+		log.Err(fmt.Sprintf("unable to read config file: %v", e))
 	} else {
 		url = strings.TrimSuffix(string(body), "\n")
 	}
@@ -40,16 +41,16 @@ func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
 	}
 
 	var req *http.Request
-	req, err = http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		log.Err(err.Error())
-		return oldRelay, err
+	req, e = http.NewRequest(http.MethodGet, url, nil)
+	if e != nil {
+		log.Err(e.Error())
+		return oldRelay, e
 	}
 
 	res, getErr := rClient.Do(req)
 	if getErr != nil {
 		log.Err(getErr.Error())
-		return oldRelay, err
+		return oldRelay, e
 	}
 
 	if res.Body != nil {
@@ -68,13 +69,13 @@ func queryRelay(oldRelay *creator.Relay) (*creator.Relay, error) {
 		return oldRelay, readErr
 	}
 
-	jsonErr := json.Unmarshal(body, &relay)
+	jsonErr := json.Unmarshal(body, r)
 	if jsonErr != nil {
 		log.Err("json not unmarshaled")
 		return oldRelay, jsonErr
 	}
 
-	return &relay, nil
+	return r, e
 }
 
 // initialise logger
@@ -90,8 +91,8 @@ type influxdbConfig struct {
 
 func main() {
 	var e error
-	var reader = bufio.NewReader(os.Stdin)
-	var output = bufio.NewWriter(os.Stdout)
+	reader := bufio.NewReader(os.Stdin)
+	output := bufio.NewWriter(os.Stdout)
 
 	log.Info("starting up spamblaster")
 
